@@ -1,0 +1,9 @@
+# to ignore environment variables
+.env
+
+# to ignore node_modules
+node_modules/
+
+# to ignore Expo and React Native 
+.expo/
+.expo-shared/ 
