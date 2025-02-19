@@ -4,11 +4,14 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { CustomButton } from '@/components/CustomButton';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 
-export default function LoginScreen({ navigation }) {
+export default function loginScreen({}) {
   const [email, setEmail] = useState('Email');
   const [password, setPassword] = useState('Password');
+  const router = useRouter();
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -28,9 +31,9 @@ export default function LoginScreen({ navigation }) {
         <TextInput style={styles.textField} onChangeText={setPassword} />
       </ThemedView>
       <ThemedView style={styles.buttonContainer}>
-        <CustomButton title="Login" onPress={() => Alert.alert("pressed Login button")}/>
-        <CustomButton title="Home" onPress={() => navigation.navigate("Home")} />
-        <CustomButton title="Browse" onPress={() => navigation.navigate("Browse")} />
+        <CustomButton title="Login" onPress={() => Alert.alert("pressed Login button, input text: "+ email + " and " +password)}/>
+        <CustomButton title="Home" onPress={() => router.push("/")} />
+        <CustomButton title="Browse" onPress={() => router.push("/(tabs)/browseScreen")} />
       </ThemedView>
     </ParallaxScrollView>
   );
