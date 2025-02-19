@@ -1,10 +1,12 @@
-import { Image, StyleSheet, Platform, Button, Text } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { CustomButton } from '@/components/CustomButton';
+import { useRouter } from 'expo-router';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
+  const router = useRouter();
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -20,8 +22,8 @@ export default function HomeScreen({ navigation }) {
       </ThemedView>  
 
       <ThemedView style={styles.buttonContainer}>
-        <CustomButton title="Browse" onPress={() => navigation.navigate("Browse")} />
-        <CustomButton title="Login" onPress={() => navigation.navigate("Search")} />
+        <CustomButton title="Browse" onPress={() => router.push('/(tabs)/browseScreen') } />
+        <CustomButton title="Login" onPress={() => router.push('/(tabs)/loginScreen') } />
       </ThemedView>
     </ParallaxScrollView>
   );

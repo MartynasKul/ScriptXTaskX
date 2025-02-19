@@ -41,7 +41,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="login"
+        name="browseScreen"
+        options={{
+          title: 'Browse',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="film.fill" color={color} />,
+        }}
+        />
+      <Tabs.Screen
+        name="loginScreen"
         options={{
           title: 'Login',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
