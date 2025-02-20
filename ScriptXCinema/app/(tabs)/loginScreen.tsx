@@ -34,6 +34,7 @@ export default function loginScreen({}) {
         <CustomButton title="Login" onPress={() => Alert.alert("pressed Login button, input text: "+ email + " and " +password)}/>
         <CustomButton title="Home" onPress={() => router.push("/")} />
         <CustomButton title="Browse" onPress={() => router.push("/(tabs)/browseScreen")} />
+        <ThemedText type="default"> WHY IS GITHUB ON WSL ACTING UP HELLO PLZ</ThemedText>
       </ThemedView>
     </ParallaxScrollView>
   );
