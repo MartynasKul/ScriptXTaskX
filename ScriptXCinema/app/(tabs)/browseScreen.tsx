@@ -4,7 +4,6 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { TMDB_API_KEY, TMDB_ACCESS } from '@env'; // vs code typescript funnzies, says it cant find, but it reads all well :)
-//export default function HomeScreen() {
 
 export default function browseScreen(){
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
@@ -38,7 +37,6 @@ export default function browseScreen(){
             `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genre.id}&sort_by=release_date.desc`
           );
           const movieData = await movieResponse.json();
-          console.log(movieData);
           setMovies((prev) => ({ ...prev, [genre.id]: movieData.results }));
         } 
         catch(error) {
@@ -64,14 +62,14 @@ export default function browseScreen(){
           <FlatList data={movies[item.id]} keyExtractor={(item) => item.id.toString()}
             horizontal showsHorizontalScrollIndicator={false}
             renderItem={({ item: movie }) => (
-              <TouchableOpacity onPress={()=> router.push('/(tabs)/movieDetailsScreen, {movieId: movie.id}')}
+              <TouchableOpacity onPress={()=> router.push({pathname: '/movieDetailsScreen', params: {movieId: movie.id}})}
                 style={styles.movieContainer}>
                 <Image source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`}}
                   style={styles.movieImage}
                   defaultSource={require('@/assets/images/cinema.jpg')} // android version of onError, to be used in case image is not found for some reason
-                  onError={(e) => {
-                    e.nativeEvent.target.setNativeProps({ source: require('@/assets/images/cinema.jpg')}); // ios but it dont work for some reason, have to investigate further
-                  }}
+                  // onError={(e) => {
+                  //   e.nativeEvent.target.setNativeProps({ source: require('@/assets/images/cinema.jpg')}); // ios but it dont work for some reason, have to investigate further
+                  // }}
                 />
                 <ThemedText type='default' style={styles.movieTitle}>{movie.title}</ThemedText>
               </TouchableOpacity>
