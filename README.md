@@ -13,9 +13,13 @@ cd ScriptXCinema
 ```
 
 To test application i used Expo, which allowed me to test my project on my iphone as my android device was acting up for some reason.
-To use expo for testing of the application, you will need to use this command:
+To use expo for testing of the application, you will need to use this command and get the Expo Go app on your mobile device:
 ```
 npx expo start
 ```
 
 Scan the generated qr code on your device and it will open your expo app, with which you will be able to try out the application. 
+If you need to test out a web version of this application, use this command:
+```
+npm run start
+```
