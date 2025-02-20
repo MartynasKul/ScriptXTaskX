@@ -3,11 +3,14 @@ import { View, Image, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator 
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { TMDB_API_KEY, TMDB_ACCESS } from '@env'; // vs code typescript funnzies, says it cant find, but it reads all well :)
+import { TMDB_API_KEY, TMDB_ACCESS } from '@env'; // vscode typescript funnzies, says it cant find, but it reads all well :)
 
 export default function browseScreen(){
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
   const [movies, setMovies] = useState<{ [key: number]: any[] }>({});
+  const [leastPopularMovies, setLeastPopularMovies] = useState<any[]>([]);
+  const [latestMovies, setLatestMovies] = useState<any[]>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -27,6 +30,35 @@ export default function browseScreen(){
 
     fetchGenres();
   }, []);
+
+  useEffect(() => {
+    const fetchSpecialLists = async () => {
+      try {
+        const leastPopularResponse = await fetch(
+          `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&sort_by=popularity.asc&vote_count.gte=10`
+        );
+        const leastPopularData = await leastPopularResponse.json();
+        setLeastPopularMovies(leastPopularData.results);
+
+        const latestMoviesResponse = await fetch(
+          `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&sort_by=release_date.desc`
+        );
+        const latestMoviesData = await latestMoviesResponse.json();
+        setLatestMovies(latestMoviesData.results);
+
+        const upcomingMoviesResponse = await fetch(
+          `https://api.themoviedb.org/3/movie/upcoming?api_key=${TMDB_API_KEY}&language=en-US`
+        );
+        const upcomingMoviesData = await upcomingMoviesResponse.json();
+        setUpcomingMovies(upcomingMoviesData.results);
+      } catch (error) {
+        console.error('Could not fetch special movie lists: ', error);
+      }
+    };
+
+    fetchSpecialLists();
+  }, []);
+
 
   useEffect(() => {
     if(genres.length > 0) {
@@ -54,33 +86,35 @@ export default function browseScreen(){
 
   return (
     
-    <FlatList data={genres} keyExtractor={(item) => item.id.toString()}
+    <FlatList
+    data={[{ title: 'Least Popular Movies', data: leastPopularMovies }, { title: 'Latest Movies', data: latestMovies }, { title: 'Upcoming Movies', data: upcomingMovies }, ...genres]}
+    keyExtractor={(item, index) => index.toString()}
     showsVerticalScrollIndicator={false}
-      renderItem={({ item }) => (
-        
-        <View style={styles.genreContainer}>
-          <ThemedText style={styles.genreTitle}type='subtitle'>{item.name}</ThemedText>
-          <FlatList data={movies[item.id]} keyExtractor={(item) => item.id.toString()}
-            horizontal showsHorizontalScrollIndicator={false}
-            renderItem={({ item: movie }) => (
-              <TouchableOpacity 
-                onPress={()=> router.push({pathname: '/movieDetailsScreen', params: {movieId: movie.id}})}
-                style={styles.movieContainer}>
-                <Image source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`}}
-                  style={styles.movieImage}
-                  defaultSource={require('@/assets/images/cinema.jpg')} // android version of onError, to be used in case image is not found for some reason
-                  // // ios but it dont work for some reason, have to investigate further
-                  // onError={(e) => {
-                  //   e.nativeEvent.target.setNativeProps({ source: require('@/assets/images/cinema.jpg')}); 
-                  // }}
-                />
-                <ThemedText type='default' style={styles.movieTitle}>{movie.title}</ThemedText>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      )}
-    />
+    renderItem={({ item }) => (
+      <View style={styles.genreContainer}>
+        <ThemedText style={styles.genreTitle} type="subtitle">{item.title || item.name}</ThemedText>
+        <FlatList
+          data={item.data || movies[item.id]}
+          keyExtractor={(movie) => movie.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item: movie }) => (
+            <TouchableOpacity
+              onPress={() => router.push({ pathname: '/movieDetailsScreen', params: { movieId: movie.id } })}
+              style={styles.movieContainer}
+            >
+              <Image
+                source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }}
+                style={styles.movieImage}
+                defaultSource={require('@/assets/images/cinema.jpg')}
+              />
+              <ThemedText type="default" style={styles.movieTitle}>{movie.title}</ThemedText>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+    )}
+  />
   );
 };
 
