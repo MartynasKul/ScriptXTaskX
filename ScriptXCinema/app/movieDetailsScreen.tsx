@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Image, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Text, Button, ScrollView, Alert} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, useFocusEffect, useNavigation } from 'expo-router';
 import { TMDB_API_KEY, TMDB_ACCESS } from '@env'; // vs code typescript funnzies, says it cant find, but it reads all well :)
 import { ThemedText } from '@/components/ThemedText';
 import { CustomButton } from '@/components/CustomButton';
@@ -11,9 +11,8 @@ export default function movieDetailsScreen(){
   const [ movie, setMovie] = useState(null);
   const [ relatedMovies, setRelatedMovies] = useState([]);
   const [ loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
-
-  console.log(movieId);
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try{
@@ -44,30 +43,44 @@ export default function movieDetailsScreen(){
     fetchMovieDetails();
   }, [movieId]);
 
-  useFocu
+  useFocusEffect(
+    useCallback(() => {
+      if(movie){
+        navigation.setOptions({ title: movie.title, headerBackTitle: 'Back' 
 
+        });
+      }
+    }, [movie]
+  ));
+  
   if(loading){
     return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator}/>
   }
   
+  console.log(movie.video);
   if(!movie){
     return <ThemedText type="title">Movie not found</ThemedText>
   }
-
   return(
     <ScrollView style={styles.container}>
       
-      <Image source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }} style={styles.movieImage} />
+      <Image 
+        source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }} 
+        style={styles.movieImage} 
+      />
 
-      <ThemedText type="title">{movie.title}</ThemedText>
-      <ThemedText type="subtitle"style={styles.description}>{movie.overview}</ThemedText>
-      <CustomButton title="Play Movie" onPress={() => Alert.alert("Play Movie feature will come at a later date")}/>
-      <CustomButton title="Add to library" onPress={() => Alert.alert("Movie added to your library (*WIP*)")}/>
+      <ThemedText type="title"> Release date: {movie.release_date}</ThemedText>
+      <ThemedText type="subtitle"style={styles.description}>{movie.overview || "There is no description at this time"}</ThemedText>
+      <CustomButton title="Play Movie"
+        onPress={() => Alert.alert("Play Movie feature will come at a later date")}
+        disabled={!movie.video}
+      />
+      <CustomButton title="Add to library" 
+        onPress={() => Alert.alert("Addition to library feature will come at a later date")}
+      />
   
-
-      <Text style={styles.sectionTitle}>Related Movies</Text>
-      <FlatList
-        data={relatedMovies}
+      <Text style={styles.sectionTitle}>Movies that might interest you:</Text>
+      <FlatList data={relatedMovies}
         horizontal
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
@@ -99,7 +112,9 @@ const styles = StyleSheet.create({
   movieImage: { 
     width: '100%', 
     height: 300, 
-    borderRadius: 10 
+    borderRadius: 10,
+    paddingBottom: 10
+
   },
   title: { 
     fontSize: 24, 

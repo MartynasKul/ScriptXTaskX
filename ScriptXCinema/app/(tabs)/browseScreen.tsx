@@ -34,9 +34,10 @@ export default function browseScreen(){
       genres.forEach(async (genre) => {
         try { 
           const movieResponse = await fetch(
-            `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genre.id}&sort_by=release_date.desc`
+            `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genre.id}`
           );
           const movieData = await movieResponse.json();
+
           setMovies((prev) => ({ ...prev, [genre.id]: movieData.results }));
         } 
         catch(error) {
@@ -58,17 +59,19 @@ export default function browseScreen(){
       renderItem={({ item }) => (
         
         <View style={styles.genreContainer}>
-          <ThemedText type='subtitle'>{item.name}</ThemedText>
+          <ThemedText style={styles.genreTitle}type='subtitle'>{item.name}</ThemedText>
           <FlatList data={movies[item.id]} keyExtractor={(item) => item.id.toString()}
             horizontal showsHorizontalScrollIndicator={false}
             renderItem={({ item: movie }) => (
-              <TouchableOpacity onPress={()=> router.push({pathname: '/movieDetailsScreen', params: {movieId: movie.id}})}
+              <TouchableOpacity 
+                onPress={()=> router.push({pathname: '/movieDetailsScreen', params: {movieId: movie.id}})}
                 style={styles.movieContainer}>
                 <Image source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`}}
                   style={styles.movieImage}
                   defaultSource={require('@/assets/images/cinema.jpg')} // android version of onError, to be used in case image is not found for some reason
+                  // // ios but it dont work for some reason, have to investigate further
                   // onError={(e) => {
-                  //   e.nativeEvent.target.setNativeProps({ source: require('@/assets/images/cinema.jpg')}); // ios but it dont work for some reason, have to investigate further
+                  //   e.nativeEvent.target.setNativeProps({ source: require('@/assets/images/cinema.jpg')}); 
                   // }}
                 />
                 <ThemedText type='default' style={styles.movieTitle}>{movie.title}</ThemedText>
@@ -89,12 +92,12 @@ const styles = StyleSheet.create({
   },
   genreContainer: {
     marginTop: 40,
-    marginBottom: 20,
     paddingHorizontal: 10,
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   },
-  categoryTitle: {
-    
-    fontSize: 18,
+  genreTitle: {
+    padding:15,
+    fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
   },

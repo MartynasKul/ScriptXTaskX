@@ -4,13 +4,15 @@ interface CustomButtonProps {
   title: string;
   onPress: () => void;
   color?: string;
+  disabled?: boolean;
 }
 
-export const CustomButton = ({ title, onPress, color = "#CCCCFF" }: CustomButtonProps) => {
+export const CustomButton = ({ title, onPress, color = "#CCCCFF", disabled }: CustomButtonProps) => {
   return (
     <TouchableOpacity style={[styles.button, { backgroundColor: color }]} 
       onPress={onPress}
       activeOpacity={0.8} 
+      disabled={disabled}
     >
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>

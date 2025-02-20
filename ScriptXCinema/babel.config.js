@@ -1,3 +1,4 @@
+// made this to be able to use .env file in my project
 module.exports = function(api) {
   api.cache(true);
 
