@@ -31,10 +31,10 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="Home"/>
-        <Stack.Screen name="loginScreen" options={{ presentation: 'modal', title: 'Login', headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',}}/>
-        <Stack.Screen name="movieDetailsScreen" options={{}}/>
+        {/* <Stack.Screen name="Home"/> */}
+        {/* <Stack.Screen name="movieDetailsScreen" options={{}}/> */}
         <Stack.Screen name="browseScreen" options={{ title:'Browse Movies', headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',}}/>
+        {/* <Stack.Screen name="loginScreen" options={{ presentation: 'modal', title: 'Login', headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',}}/> */}
         <Stack.Screen name="+not-found" options={{ title: 'Oops!', headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',}}/>
       </Stack>
       <StatusBar style="auto" />
