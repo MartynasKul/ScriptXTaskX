@@ -73,7 +73,7 @@ export default function browseScreen(){
           setMovies((prev) => ({ ...prev, [genre.id]: movieData.results }));
         } 
         catch(error) {
-          console.error('Couldnt fetch movies: ', error);
+          console.error('Couldnt fetch movies ABOBA: ', error);
         }
       });
       setLoading(false);
